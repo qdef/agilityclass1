@@ -1,0 +1,10 @@
+import requests
+import time
+from lxml import html
+for i in range(1000):
+	website = requests.get('https://twitter.com/onedirection?lang=fr')
+	tree=html.fromstring(website.content)
+	followers=tree.xpath("//@data-count")
+	final=followers[2]
+	print(final)
+	time.sleep(5)
