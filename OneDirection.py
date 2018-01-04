@@ -7,45 +7,6 @@ from lxml import html
 for i in range(1000):
 	website = requests.get('https://twitter.com/onedirection?lang=fr')
 	tree=html.fromstring(website.content)
-	followers=tree.xpath("//@data-count")
-	final=followers[2]
-	print(final)
+	followers=tree.xpath("//a[@data-nav='followers']/span/@data-count")
+	print(followers[0])
 	time.sleep(5)
-
-"""Test:
-31749140
-31749140
-31749140
-31749140
-31749141
-31749141
-31749141
-31749142
-31749142
-31749142
-31749140
-31749140
-31749140
-31749140
-31749140
-31749139
-31749139
-31749137
-(...)
-31749121
-31749120
-31749120
-31749119
-31749118
-31749118
-31749119
-31749119
-31749121
-31749122
-31749122
-31749122
-31749122
-31749122
-
-Conclusion: OneDirection is losing followers today =)
-"""
