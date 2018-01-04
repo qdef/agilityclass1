@@ -3,36 +3,34 @@ import requests
 import time
 from lxml import html
 
-
 try:
-	conn = psycopg2.connect("dbname='Twitter' user='postgres' host='localhost' password='coucou'")
+	connstring = "dbname='Twitter' user='postgres' host='localhost' password='coucou'"
+	print("Connecting to database %s..." %(connstring))
+	conn = psycopg2.connect(connstring)
+	print("Connection is successful.")
 except:
 	print("Failed to connect to the database")
 
+#The next step is to define a cursor to work with.
+cursor = conn.cursor()
 
-#The next step is to define a cursor to work with. 
-cur = conn.cursor()
+#Table creation in the Twitter database
+cursor.execute("CREATE TABLE IF NOT EXISTS Twitter_1D (SampleNumber int, Followers int, Date date, Heure varchar(8))")
 
-#Now that we have the cursor defined we can execute a query. 
-cur.execute("""SELECT datname from pg_database""")
-
-#When you have executed your query you need to have a list [variable?] to put your results in. 
-rows = cur.fetchall()
-	
-#Now all the results from our query are within the variable named rows. 
-#Using this variable you can start processing the results. 
-#To print the screen you could do the following. 
-print ("\nShow me the databases:\n")
-for row in rows:
-	print ("   ", row[0])
-	
-	
-
-"""
+Sample = 1
 for i in range(1000):
 	website = requests.get('https://twitter.com/onedirection?lang=fr')
 	tree=html.fromstring(website.content)
-	followers=tree.xpath("//a[@data-nav='followers']/span/@data-count")
-	print(followers[0])
+	followers=tree.xpath("//a[@data-nav='followers']/span/@data-count")[0]
+	
+	date = time.strftime("%d/%m/%y")
+	heure = time.strftime("%H:%M:%S")
+	
+	print(followers, " ", date, " ", heure)
+	
+	cursor.execute("INSERT INTO Twitter_1D VALUES ('"+ str(Sample) +"','"+ str(followers) +"','"+ str(date) +"','"+ str(heure) +"')")
+	conn.commit()
+	Sample += 1
 	time.sleep(5)
-"""
+
+conn.close()
