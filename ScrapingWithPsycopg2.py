@@ -18,7 +18,7 @@ cursor = conn.cursor()
 cursor.execute("CREATE TABLE IF NOT EXISTS Twitter_1D (SampleNumber int, Followers int, Date date, Heure varchar(8))")
 
 Sample = 1
-for i in range(1000):
+while True:
 	website = requests.get('https://twitter.com/onedirection?lang=fr')
 	tree=html.fromstring(website.content)
 	followers=tree.xpath("//a[@data-nav='followers']/span/@data-count")[0]
@@ -26,7 +26,7 @@ for i in range(1000):
 	date = time.strftime("%d/%m/%y")
 	heure = time.strftime("%H:%M:%S")
 	
-	print(followers, " ", date, " ", heure)
+	print(Sample, "   ", followers, "   ", date, "   ", heure)
 	
 	cursor.execute("INSERT INTO Twitter_1D VALUES ('"+ str(Sample) +"','"+ str(followers) +"','"+ str(date) +"','"+ str(heure) +"')")
 	conn.commit()
