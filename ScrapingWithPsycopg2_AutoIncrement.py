@@ -23,10 +23,10 @@ while True:
 	CurrDate=time.strftime("%d/%m/%Y")
 	cursor.execute("select max(count) from TwitterAutoIncrement")
 	#only if database already exists : 
-	#count = int(cursor.fetchall()[0][0]) + 1
+	count = int(cursor.fetchall()[0][0]) + 1
 	
 	#remove the count if database does not exist : 
-	#print(count, " ", followers, " ", CurrDate, " ", CurrTime)
+	print(count, " ", followers, " ", CurrDate, " ", CurrTime)
 
 	cursor.execute("INSERT INTO TwitterAutoIncrement (time, date, followers) VALUES (%s, %s, %s);", (CurrTime, CurrDate, followers))
 	conn.commit()

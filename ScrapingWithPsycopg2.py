@@ -14,23 +14,23 @@ except:
 #The next step is to define a cursor to work with.
 cursor = conn.cursor()
 
-#Table creation in the Twitter database
-cursor.execute("CREATE TABLE IF NOT EXISTS Twitter_1D (SampleNumber int, Followers int, Date date, Heure varchar(8))")
+cursor.execute("CREATE TABLE IF NOT EXISTS TwitterAutoIncrement (Count bigserial primary key, followers integer, time varchar(8), date date);")
 
-Sample = 1
 while True:
 	website = requests.get('https://twitter.com/onedirection?lang=fr')
 	tree=html.fromstring(website.content)
-	followers=tree.xpath("//a[@data-nav='followers']/span/@data-count")[0]
+	followers=int(tree.xpath("//a[@data-nav='followers']/span/@data-count")[0])
+	CurrTime=time.strftime("%H:%M:%S")
+	CurrDate=time.strftime("%d/%m/%Y")
+	cursor.execute("select max(count) from TwitterAutoIncrement")
+	#only if database already exists : 
+	count = int(cursor.fetchall()[0][0]) + 1
 	
-	date = time.strftime("%d/%m/%y")
-	heure = time.strftime("%H:%M:%S")
-	
-	print(Sample, "   ", followers, "   ", date, "   ", heure)
-	
-	cursor.execute("INSERT INTO Twitter_1D VALUES ('"+ str(Sample) +"','"+ str(followers) +"','"+ str(date) +"','"+ str(heure) +"')")
-	conn.commit()
-	Sample += 1
-	time.sleep(5)
+	#remove the count if database does not exist : 
+	print(count, " ", followers, " ", CurrDate, " ", CurrTime)
 
+	cursor.execute("INSERT INTO TwitterAutoIncrement (time, date, followers) VALUES (%s, %s, %s);", (CurrTime, CurrDate, followers))
+	conn.commit()
+	time.sleep(5)
 conn.close()
+
