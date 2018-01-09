@@ -14,13 +14,14 @@ except:
 	
 cursor = conn.cursor()
 
-
 cursor.execute("select Count from TwitterAutoIncrement")
 X = cursor.fetchall()
 cursor.execute("select Followers from TwitterAutoIncrement")
 Y = cursor.fetchall()
 x=[]
 y=[]
+z=[]
+
 for i in range(len(X)):
 	x.append(X[i][0])
 	
@@ -28,19 +29,24 @@ for k in range(len(Y)):
 	y.append(Y[k][0])
 
 print(x)
-
 print(y)
 
 conn.close()
 
+maxvalue = max(y)
 
-plt.plot(x,y)
+for j in range(len(Y)):
+	z.append(maxvalue)
 
-plt.axis([1,25,31757000, 31758000])
+graphe = plt.plot(x,y,'k-', x, z, 'r--')
+
+plt.axis([1,len(x),min(y)-100, max(y)+100])
 
 plt.ylabel('Followers')
 
-plt.xlabel('Samples')
+plt.xlabel('Timeline')
+
+plt.title('One Direction followers on Twitter')
 
 plt.show()
 
